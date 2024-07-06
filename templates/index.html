@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diabetes Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #464343;
+            color: #333;
+        }
+
+        .header {
+            position: relative;
+            background: url('templates/disease.jpg') no-repeat center center;
+            background-size: cover;
+            color: rgb(222, 219, 219);
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #333;
+            z-index: 1;
+        }
+
+        .header h1, .header p {
+            position: relative;
+            z-index: 2;
+        }
+
+        .instruction-container {
+            text-align: center;
+            margin: 20px;
+        }
+
+        .instruction-container p {
+            display: inline-block;
+            color: rgb(223, 220, 220);
+            font-size: 20px;
+        }
+
+        .instruction-container .arrow {
+            font-size: 24px;
+            margin-left: 10px;
+        }
+
+        .instruction-container button {
+            background-color: #8B4513;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-left: 10px;
+        }
+
+        .form-container {
+            background-color: #ddd;
+            padding: 20px;
+            margin: 20px auto;
+            border-radius: 10px;
+            display: none;
+            max-width: 500px;
+        }
+
+        .form-container.show {
+            display: block;
+        }
+
+        .form-container h2 {
+            text-align: center;
+        }
+
+        .form-container label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        .form-container input,
+        .form-container select {
+            width: calc(100% - 20px);
+            padding: 8px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+
+        .form-container button {
+            background-color: #8B4513;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            margin-top: 20px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .predict-result {
+            background-color: #ddd;
+            padding: 20px;
+            margin: 20px auto;
+            border-radius: 10px;
+            max-width: 500px;
+            display: none;
+        }
+
+        .predict-result h1 {
+            text-align: center;
+        }
+
+        .predict-result.show {
+            display: block;
+        }
+
+        .dataframe {
+            background-color: #ddd;
+            padding: 20px;
+            margin: 20px auto;
+            border-radius: 10px;
+            max-width: 500px;
+            display: none;
+        }
+
+        .dataframe h3 {
+            text-align: center;
+        }
+
+        .dataframe.show {
+            display: block;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            position: relative;
+            bottom: 0;
+            clear: both;
+        }
+    </style>
+    <script>
+        function showForm() {
+            document.getElementById('formContainer').classList.add('show');
+        }
+
+        function showResult() {
+            document.getElementById('predictResult').classList.add('show');
+            document.getElementById('Dataframe').classList.add('show');
+        }
+
+        function handleFormSubmit(event) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+
+            fetch("/predict", {
+                method: "POST",
+                body: formData
+            }).then(response => response.text())
+            .then(html => {
+                document.documentElement.innerHTML = html;
+                showResult();
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('diabetesForm');
+            form.addEventListener('submit', handleFormSubmit);
+        });
+    </script>
+</head>
+<body>
+    <div class="header">
+        <h1>Predicting The Likelihood of Patient with Diabetes</h1>
+        <p>This site helps healthcare professionals identify patients at risk of developing diabetes and develop personalized treatment plans.</p>
+    </div>
+    <div class="instruction-container">
+        <p>To check the likelihood of having Diabetes <span class="arrow">→</span></p>
+        <button onclick="showForm()">Click Here</button>
+    </div>
+    <div class="form-container" id="formContainer">
+        <h2>PLEASE FILL OUT THE FORM ACCURATELY</h2>
+        <form method="post" action="/predict" id="diabetesForm">
+            <label for="gender">Gender:</label>
+            <select id="gender" name="gender">
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+            </select>
+            <label for="age">Age:</label>
+            <input type="number" placeholder="Enter your Age" id="age" name="age" required>
+            <label for="bloodGlucose">Blood Glucose Level:</label>
+            <input type="number" step="any" placeholder="Enter your Blood Glucose Level" id="bloodGlucose" name="bloodGlucose" required>
+            <label for="hypertension">Have/Had Hypertension?</label>
+            <select id="hypertension" name="hypertension">
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+            </select>
+            <label for="heartDisease">Have/Had any Heart Disease?</label>
+            <select id="heartDisease" name="heartDisease">
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+            </select>
+            <label for="hemoglobinA1c">Hemoglobin A1c Level:</label>
+            <input type="number" step="any" placeholder="Enter your Hemoglobin Level" id="hemoglobinA1c" name="hemoglobinA1c" required>
+            <label for="bmi">Body Mass Index Level:</label>
+            <input type="number" step="any" placeholder="Enter your BMI score" id="bmi" name="bmi" required>
+            <button type="submit">Predict</button>
+        </form>
+    </div>
+    <div class="predict-result" id="predictResult">
+        <h1>Prediction Result</h1>
+        <h2>{{ text }}</h2>
+        <button onclick="window.location.href='/'">Reset</button>
+    </div>
+    <div class="dataframe" id="Dataframe">
+        <h3>Patient Information</h3>
+        <p>Gender: {{ gender }}</p>
+        <p>Age: {{ age }}</p>
+        <p>Blood Glucose Level: {{ bloodglucose }}</p>
+        <p>Hypertension: {{ hypertension }}</p>
+        <p>Heart Disease: {{ heart_disease }}</p>
+        <p>Hemoglobin A1c Level: {{ hemoglobin }}</p>
+        <p>Body Mass Index Level: {{ bmi }}</p>
+    </div>
+    <footer>
+        <p>Created by Wellspring Praise</p>
+        <p>Email: <a href="mailto:wellspringpraise@gmail.com">wellspringpraise@gmail.com</a></p>
+        <p>LinkedIn: <a href="https://www.linkedin.com/in/wellspring-praise/" target="_blank">LinkedIn profile</a></p>
+    </footer>
+</body>
+</html>
