@@ -90,21 +90,21 @@ Future enhancements for the project include:
 
 To use this project locally, follow these steps:
 
-* Clone the repository:
+1. Clone the repository:
 
-git clone https://github.com/your-username/diabetes-prediction.git
+* git clone https://github.com/Wells21/diabetes-model-deployment.git
 
-* Install the required packages:
+2. Install the required packages:
 
-pip install -r requirements.txt
+* pip install -r requirements.txt
 
-* Run the Flask app:
+3. Run the Flask app:
 
-python app.py
+* python app.py
 
-* Open your browser and go to:
+4. Open your browser and go to:
 
-http://127.0.0.1:5000/
+* http://127.0.0.1:5000/
 
 **Contributing**
 
